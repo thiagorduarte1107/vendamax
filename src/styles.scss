@@ -1,0 +1,673 @@
+/* ==================== TEMA MINIMALISTA - PRETO & BRANCO ==================== */
+/* Inspirado em: Apple, Notion, Figma */
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+/* ==================== FONTES MODERNAS ==================== */
+/* Inter - Sans-serif moderna e legível */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* JetBrains Mono - Monospace para números e código */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+/* Geist (alternativa local se preferir) */
+/* @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap'); */
+
+:root {
+  /* ==================== MONOCROMÁTICO ==================== */
+  /* Backgrounds */
+  --background: 0 0% 100%;              /* Branco puro */
+  --background-secondary: 0 0% 98%;     /* Branco suave */
+  --foreground: 0 0% 9%;                /* Preto suave */
+  
+  /* Cards & Surfaces */
+  --card: 0 0% 100%;                    /* Branco */
+  --card-foreground: 0 0% 9%;
+  --card-hover: 0 0% 96%;               /* Cinza muito claro */
+  
+  /* Borders & Dividers */
+  --border: 0 0% 90%;                   /* Cinza claro */
+  --border-strong: 0 0% 80%;            /* Cinza médio */
+  --divider: 0 0% 93%;
+  
+  /* Text Colors */
+  --text-primary: 0 0% 9%;              /* Preto suave */
+  --text-secondary: 0 0% 45%;           /* Cinza médio */
+  --text-tertiary: 0 0% 62%;            /* Cinza claro */
+  
+  /* Muted */
+  --muted: 0 0% 96%;
+  --muted-foreground: 0 0% 45%;
+  
+  /* ==================== ÍCONES COLORIDOS VIBRANTES ==================== */
+  /* Primary - Azul Elétrico */
+  --icon-primary: 217 91% 60%;
+  --icon-primary-bg: 217 91% 60% / 0.1;
+  
+  /* Success - Verde Vibrante */
+  --icon-success: 142 76% 36%;
+  --icon-success-bg: 142 76% 36% / 0.1;
+  
+  /* Warning - Laranja Vibrante */
+  --icon-warning: 25 95% 53%;
+  --icon-warning-bg: 25 95% 53% / 0.1;
+  
+  /* Danger - Vermelho Vibrante */
+  --icon-danger: 0 84% 60%;
+  --icon-danger-bg: 0 84% 60% / 0.1;
+  
+  /* Info - Ciano */
+  --icon-info: 199 89% 48%;
+  --icon-info-bg: 199 89% 48% / 0.1;
+  
+  /* Purple - Roxo */
+  --icon-purple: 262 83% 58%;
+  --icon-purple-bg: 262 83% 58% / 0.1;
+  
+  /* Pink - Rosa */
+  --icon-pink: 330 81% 60%;
+  --icon-pink-bg: 330 81% 60% / 0.1;
+  
+  /* Yellow - Amarelo */
+  --icon-yellow: 45 93% 47%;
+  --icon-yellow-bg: 45 93% 47% / 0.1;
+  
+  /* ==================== DESIGN TOKENS ==================== */
+  --radius: 0.5rem;
+  --radius-sm: 0.375rem;
+  --radius-lg: 0.75rem;
+  --radius-full: 9999px;
+  
+  /* Shadows Sutis */
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  
+  /* ==================== TIPOGRAFIA ==================== */
+  /* Font Families */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+  
+  /* Font Sizes */
+  --text-xs: 0.75rem;      /* 12px */
+  --text-sm: 0.875rem;     /* 14px */
+  --text-base: 1rem;       /* 16px */
+  --text-lg: 1.125rem;     /* 18px */
+  --text-xl: 1.25rem;      /* 20px */
+  --text-2xl: 1.5rem;      /* 24px */
+  --text-3xl: 1.875rem;    /* 30px */
+  --text-4xl: 2.25rem;     /* 36px */
+  
+  /* Font Weights */
+  --font-light: 300;
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-extrabold: 800;
+  
+  /* Line Heights */
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.75;
+  
+  /* Letter Spacing */
+  --tracking-tight: -0.025em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.025em;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: var(--font-normal);
+  line-height: var(--leading-normal);
+  letter-spacing: var(--tracking-normal);
+  background-color: hsl(var(--background));
+  color: hsl(var(--text-primary));
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* ==================== TIPOGRAFIA GLOBAL ==================== */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans);
+  font-weight: var(--font-semibold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: hsl(var(--text-primary));
+}
+
+h1 {
+  font-size: var(--text-4xl);
+  font-weight: var(--font-bold);
+}
+
+h2 {
+  font-size: var(--text-3xl);
+}
+
+h3 {
+  font-size: var(--text-2xl);
+}
+
+h4 {
+  font-size: var(--text-xl);
+}
+
+h5 {
+  font-size: var(--text-lg);
+}
+
+h6 {
+  font-size: var(--text-base);
+}
+
+/* Números e valores monetários */
+.font-mono,
+.currency,
+.number {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-normal);
+}
+
+/* Parágrafos */
+p {
+  line-height: var(--leading-relaxed);
+  margin-bottom: 1rem;
+}
+
+/* Links */
+a {
+  color: hsl(var(--icon-primary));
+  text-decoration: none;
+  transition: color 0.2s ease;
+  
+  &:hover {
+    color: hsl(var(--icon-primary) / 0.8);
+    text-decoration: underline;
+  }
+}
+
+/* Strong e Bold */
+strong, b {
+  font-weight: var(--font-semibold);
+}
+
+/* Small text */
+small {
+  font-size: var(--text-sm);
+  color: hsl(var(--text-secondary));
+}
+
+/* ==================== SCROLLBAR MINIMALISTA ==================== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border-strong));
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--text-secondary));
+}
+
+/* ==================== MATERIAL OVERRIDES - MINIMALISTA ==================== */
+.mat-mdc-card {
+  background-color: hsl(var(--card)) !important;
+  color: hsl(var(--card-foreground)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: hsl(var(--border-strong));
+    box-shadow: var(--shadow-md) !important;
+  }
+}
+
+.mat-mdc-table {
+  background-color: hsl(var(--card)) !important;
+  box-shadow: none !important;
+  border: 1px solid hsl(var(--border));
+  
+  .mat-mdc-header-row {
+    background-color: hsl(var(--background-secondary)) !important;
+    border-bottom: 2px solid hsl(var(--border-strong));
+  }
+  
+  .mat-mdc-row {
+    border-bottom: 1px solid hsl(var(--divider));
+    transition: background-color 0.15s ease;
+    
+    &:hover {
+      background-color: hsl(var(--card-hover)) !important;
+    }
+  }
+}
+
+.mat-mdc-form-field {
+  .mat-mdc-text-field-wrapper {
+    background-color: hsl(var(--background)) !important;
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius-sm);
+  }
+  
+  &.mat-focused .mat-mdc-text-field-wrapper {
+    border-color: hsl(var(--text-primary));
+    box-shadow: 0 0 0 1px hsl(var(--text-primary));
+  }
+}
+
+.mat-mdc-button,
+.mat-mdc-raised-button {
+  border-radius: var(--radius-sm) !important;
+  font-weight: 500 !important;
+  transition: all 0.15s ease !important;
+  
+  &.mat-primary {
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md) !important;
+    }
+  }
+}
+
+/* ==================== UTILITY CLASSES ==================== */
+/* Text Alignment */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+/* Text Colors */
+.text-primary { color: hsl(var(--text-primary)); }
+.text-secondary { color: hsl(var(--text-secondary)); }
+.text-tertiary { color: hsl(var(--text-tertiary)); }
+
+/* Font Families */
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+
+/* Font Sizes */
+.text-xs { font-size: var(--text-xs); }
+.text-sm { font-size: var(--text-sm); }
+.text-base { font-size: var(--text-base); }
+.text-lg { font-size: var(--text-lg); }
+.text-xl { font-size: var(--text-xl); }
+.text-2xl { font-size: var(--text-2xl); }
+.text-3xl { font-size: var(--text-3xl); }
+.text-4xl { font-size: var(--text-4xl); }
+
+/* Font Weights */
+.font-light { font-weight: var(--font-light); }
+.font-normal { font-weight: var(--font-normal); }
+.font-medium { font-weight: var(--font-medium); }
+.font-semibold { font-weight: var(--font-semibold); }
+.font-bold { font-weight: var(--font-bold); }
+.font-extrabold { font-weight: var(--font-extrabold); }
+
+/* Line Heights */
+.leading-tight { line-height: var(--leading-tight); }
+.leading-normal { line-height: var(--leading-normal); }
+.leading-relaxed { line-height: var(--leading-relaxed); }
+
+/* Letter Spacing */
+.tracking-tight { letter-spacing: var(--tracking-tight); }
+.tracking-normal { letter-spacing: var(--tracking-normal); }
+.tracking-wide { letter-spacing: var(--tracking-wide); }
+
+/* Spacing */
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mt-4 { margin-top: 2rem; }
+
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+.mb-4 { margin-bottom: 2rem; }
+
+.p-1 { padding: 0.5rem; }
+.p-2 { padding: 1rem; }
+.p-3 { padding: 1.5rem; }
+.p-4 { padding: 2rem; }
+
+/* Layout */
+.full-width { width: 100%; }
+.flex { display: flex; }
+.flex-column { flex-direction: column; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.align-center { align-items: center; }
+
+.gap-1 { gap: 0.5rem; }
+.gap-2 { gap: 1rem; }
+.gap-3 { gap: 1.5rem; }
+.gap-4 { gap: 2rem; }
+
+/* ==================== ÍCONES COLORIDOS ==================== */
+.icon-container {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  padding: 0.5rem;
+  transition: all 0.2s ease;
+  
+  mat-icon {
+    font-size: 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
+.icon-primary {
+  background: hsl(var(--icon-primary-bg));
+  color: hsl(var(--icon-primary));
+}
+
+.icon-success {
+  background: hsl(var(--icon-success-bg));
+  color: hsl(var(--icon-success));
+}
+
+.icon-warning {
+  background: hsl(var(--icon-warning-bg));
+  color: hsl(var(--icon-warning));
+}
+
+.icon-danger {
+  background: hsl(var(--icon-danger-bg));
+  color: hsl(var(--icon-danger));
+}
+
+.icon-info {
+  background: hsl(var(--icon-info-bg));
+  color: hsl(var(--icon-info));
+}
+
+.icon-purple {
+  background: hsl(var(--icon-purple-bg));
+  color: hsl(var(--icon-purple));
+}
+
+.icon-pink {
+  background: hsl(var(--icon-pink-bg));
+  color: hsl(var(--icon-pink));
+}
+
+.icon-yellow {
+  background: hsl(var(--icon-yellow-bg));
+  color: hsl(var(--icon-yellow));
+}
+
+/* ==================== STATUS BADGES - COLORIDOS ==================== */
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  border: 1px solid;
+  
+  mat-icon {
+    font-size: 0.875rem;
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+}
+
+.status-pending {
+  background: hsl(var(--icon-warning-bg));
+  color: hsl(var(--icon-warning));
+  border-color: hsl(var(--icon-warning) / 0.2);
+}
+
+.status-paid,
+.status-completed {
+  background: hsl(var(--icon-success-bg));
+  color: hsl(var(--icon-success));
+  border-color: hsl(var(--icon-success) / 0.2);
+}
+
+.status-overdue,
+.status-cancelled {
+  background: hsl(var(--icon-danger-bg));
+  color: hsl(var(--icon-danger));
+  border-color: hsl(var(--icon-danger) / 0.2);
+}
+
+/* ==================== ALERTS - COLORIDOS ==================== */
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  border-left: 3px solid;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  
+  mat-icon {
+    font-size: 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+  }
+}
+
+.alert-success {
+  background: hsl(var(--icon-success-bg));
+  color: hsl(var(--icon-success));
+  border-color: hsl(var(--icon-success));
+}
+
+.alert-warning,
+.alert-low-stock {
+  background: hsl(var(--icon-warning-bg));
+  color: hsl(var(--icon-warning));
+  border-color: hsl(var(--icon-warning));
+}
+
+.alert-error,
+.alert-danger {
+  background: hsl(var(--icon-danger-bg));
+  color: hsl(var(--icon-danger));
+  border-color: hsl(var(--icon-danger));
+}
+
+.alert-info {
+  background: hsl(var(--icon-info-bg));
+  color: hsl(var(--icon-info));
+  border-color: hsl(var(--icon-info));
+}
+
+/* ==================== DIVIDERS ==================== */
+.divider {
+  height: 1px;
+  background: hsl(var(--divider));
+  border: none;
+  margin: 1rem 0;
+}
+
+.divider-strong {
+  height: 2px;
+  background: hsl(var(--border-strong));
+}
+
+/* ==================== HOVER EFFECTS ==================== */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+.hover-scale {
+  transition: transform 0.2s ease;
+  
+  &:hover {
+    transform: scale(1.02);
+  }
+}
+
+/* ==================== DIALOG GLOBAL STYLES ==================== */
+.mat-mdc-dialog-container {
+  .mdc-dialog__surface {
+    border-radius: var(--radius-lg) !important;
+    box-shadow: var(--shadow-xl) !important;
+  }
+}
+
+.dialog-container {
+  width: 600px;
+  max-width: 90vw;
+  
+  &.dialog-sm {
+    width: 500px;
+  }
+  
+  &.dialog-lg {
+    width: 700px;
+  }
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid hsl(var(--border));
+  background: hsl(var(--background));
+
+  h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: hsl(var(--text-primary));
+    letter-spacing: var(--tracking-tight);
+  }
+
+  button[mat-icon-button] {
+    width: 2.5rem;
+    height: 2.5rem;
+    
+    mat-icon {
+      color: hsl(var(--text-secondary));
+    }
+    
+    &:hover mat-icon {
+      color: hsl(var(--text-primary));
+    }
+  }
+}
+
+.dialog-content {
+  padding: 1.5rem;
+  max-height: 60vh;
+  overflow-y: auto;
+  
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: hsl(var(--border-strong));
+    border-radius: 3px;
+  }
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid hsl(var(--border));
+  background: hsl(var(--background-secondary));
+  
+  button {
+    min-width: 100px;
+  }
+}
+
+/* Dialog Form Fields */
+.dialog-content {
+  .full-width {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .half-width {
+    width: 100%;
+  }
+
+  mat-form-field {
+    &.mat-mdc-form-field {
+      .mat-mdc-text-field-wrapper {
+        background: hsl(var(--background)) !important;
+      }
+      
+      .mat-mdc-form-field-icon-prefix {
+        padding-right: 0.75rem;
+        
+        mat-icon {
+          color: hsl(var(--icon-primary));
+        }
+      }
+      
+      .mat-mdc-form-field-text-prefix {
+        padding-left: 0.75rem;
+        padding-right: 0.5rem;
+        color: hsl(var(--text-secondary));
+        font-weight: 500;
+      }
+      
+      &.mat-focused {
+        .mat-mdc-form-field-icon-prefix mat-icon {
+          color: hsl(var(--icon-primary));
+        }
+        
+        .mat-mdc-form-field-text-prefix {
+          color: hsl(var(--text-primary));
+        }
+      }
+      
+      &.mat-form-field-invalid {
+        .mat-mdc-form-field-icon-prefix mat-icon {
+          color: hsl(var(--icon-danger));
+        }
+      }
+    }
+  }
+}

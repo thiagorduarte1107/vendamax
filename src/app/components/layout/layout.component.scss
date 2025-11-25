@@ -1,0 +1,225 @@
+.sidenav-container {
+  height: 100vh;
+}
+
+.sidenav {
+  width: 260px;
+  background-color: hsl(var(--card));
+  border-right: 1px solid hsl(var(--border));
+
+  .sidenav-header {
+    padding: 1.5rem 1rem;
+    background: hsl(var(--text-primary));
+    color: hsl(var(--background));
+    border-bottom: 1px solid hsl(var(--border));
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+
+      .logo {
+        flex-shrink: 0;
+        
+        svg {
+          display: block;
+          color: hsl(var(--background));
+          filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+      }
+
+      .brand {
+        flex: 1;
+
+        h2 {
+          margin: 0;
+          font-size: 1.5rem;
+          font-weight: 700;
+          letter-spacing: -0.02em;
+          color: hsl(var(--background));
+        }
+
+        p {
+          margin: 0.125rem 0 0 0;
+          font-size: 0.75rem;
+          font-weight: 500;
+          opacity: 0.85;
+          letter-spacing: 0.02em;
+          text-transform: uppercase;
+        }
+      }
+    }
+  }
+
+  mat-nav-list {
+    padding-top: 0.5rem;
+
+    a {
+      margin: 0.25rem 0.5rem;
+      border-radius: var(--radius);
+      transition: all 0.2s;
+
+      &:hover {
+        background-color: hsl(var(--accent));
+      }
+
+      &.active {
+        background-color: hsl(var(--primary) / 0.1);
+        color: hsl(var(--primary));
+
+        mat-icon {
+          color: hsl(var(--primary));
+        }
+      }
+
+      mat-icon {
+        color: hsl(var(--muted-foreground));
+      }
+    }
+  }
+}
+
+.toolbar {
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  z-index: 10;
+  background-color: hsl(var(--card));
+  border-bottom: 1px solid hsl(var(--border));
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+  .user-button {
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    
+    .user-avatar {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, hsl(var(--icon-primary)), hsl(var(--icon-purple)));
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.875rem;
+      letter-spacing: 0.5px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: 2px solid transparent;
+
+      &:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px hsl(var(--icon-primary) / 0.4);
+        border-color: hsl(var(--background));
+      }
+    }
+  }
+}
+
+.content {
+  padding: 1.5rem;
+  background-color: hsl(var(--background));
+  min-height: calc(100vh - 64px);
+}
+
+/* User Menu Dropdown */
+::ng-deep .user-menu {
+  margin-top: 0.75rem;
+  min-width: 260px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+
+  .mat-mdc-menu-content {
+    padding: 0;
+  }
+
+  .menu-header {
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-bottom: 1px solid hsl(var(--border));
+
+    .user-avatar {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, hsl(var(--icon-primary)), hsl(var(--icon-purple)));
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.125rem;
+      flex-shrink: 0;
+      letter-spacing: 0.5px;
+    }
+
+    .user-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      flex: 1;
+      min-width: 0;
+
+      strong {
+        font-size: 0.9375rem;
+        font-weight: 600;
+        color: hsl(var(--text-primary));
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      span {
+        font-size: 0.8125rem;
+        color: hsl(var(--text-secondary));
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+
+  button[mat-menu-item] {
+    padding: 1rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    mat-icon {
+      color: hsl(var(--destructive));
+      font-size: 1.25rem;
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+
+    span {
+      color: hsl(var(--text-primary));
+    }
+
+    &:hover {
+      background-color: hsl(var(--destructive) / 0.1);
+
+      span {
+        color: hsl(var(--destructive));
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .sidenav {
+    width: 100%;
+  }
+
+  .content {
+    padding: 1rem;
+  }
+}

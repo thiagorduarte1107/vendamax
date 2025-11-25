@@ -1,0 +1,28 @@
+.products-container {
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+
+    h1 {
+      margin: 0;
+      color: hsl(var(--foreground));
+      font-size: 1.875rem;
+      font-weight: 600;
+    }
+  }
+
+  .loading {
+    display: flex;
+    justify-content: center;
+    padding: 2.5rem;
+  }
+
+  table {
+    .low-stock {
+      color: hsl(var(--destructive));
+      font-weight: 600;
+    }
+  }
+}

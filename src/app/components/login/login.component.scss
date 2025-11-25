@@ -1,0 +1,106 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: hsl(var(--background-secondary));
+  padding: 1.25rem;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 1.25rem;
+  background-color: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+
+  mat-card-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .login-logo {
+      margin-bottom: 1rem;
+      
+      svg {
+        color: hsl(var(--text-primary));
+        filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
+      }
+    }
+
+    mat-card-title {
+      h1 {
+        font-size: 2rem;
+        margin: 0;
+        color: hsl(var(--foreground));
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+
+      p {
+        margin: 0.375rem 0 0 0;
+        color: hsl(var(--muted-foreground));
+        font-size: 0.875rem;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+      }
+    }
+  }
+
+  mat-card-content {
+    padding: 1.25rem 0;
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+
+      mat-form-field {
+        width: 100%;
+      }
+
+      button {
+        margin-top: 0.5rem;
+        height: 3rem;
+        font-size: 1rem;
+        font-weight: 500;
+
+        mat-spinner {
+          display: inline-block;
+          margin: 0 auto;
+        }
+      }
+    }
+  }
+}
+
+.error-message {
+  color: hsl(var(--destructive));
+  font-size: 0.875rem;
+  text-align: center;
+  padding: 0.5rem;
+  background-color: hsl(var(--destructive) / 0.1);
+  border-radius: var(--radius);
+  border: 1px solid hsl(var(--destructive) / 0.2);
+}
+
+.demo-info {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background-color: hsl(var(--primary) / 0.1);
+  border-radius: var(--radius);
+  text-align: center;
+  border: 1px solid hsl(var(--primary) / 0.2);
+
+  p {
+    margin: 0;
+    font-size: 0.8125rem;
+    color: hsl(var(--primary));
+
+    strong {
+      font-weight: 600;
+    }
+  }
+}

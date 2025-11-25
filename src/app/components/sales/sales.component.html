@@ -1,0 +1,238 @@
+<div class="sales-container">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-content">
+      <h1>Vendas</h1>
+      <p class="subtitle">Gerencie suas vendas e transações</p>
+    </div>
+    <button mat-raised-button color="primary" (click)="openNewSaleDialog()">
+      <mat-icon>add</mat-icon>
+      Nova Venda
+    </button>
+  </div>
+
+  <!-- Mensagem de Erro Global -->
+  <mat-card *ngIf="formError && !showNewSaleDialog" class="error-card">
+    <mat-card-content>
+      <mat-icon color="warn">error</mat-icon>
+      <span>{{ formError }}</span>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Tabela de Vendas -->
+  <mat-card>
+    <mat-card-content>
+      <div *ngIf="loading" class="loading">
+        <mat-spinner></mat-spinner>
+        <p>Carregando vendas...</p>
+      </div>
+
+      <!-- Mensagem quando não há vendas -->
+      <div *ngIf="!loading && sales.length === 0" class="empty-state">
+        <mat-icon>shopping_cart</mat-icon>
+        <p>Nenhuma venda encontrada</p>
+        <button mat-raised-button color="primary" (click)="openNewSaleDialog()">
+          <mat-icon>add</mat-icon>
+          Criar primeira venda
+        </button>
+      </div>
+
+      <table mat-table [dataSource]="sales" *ngIf="!loading && sales.length > 0" class="full-width">
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>ID</th>
+          <td mat-cell *matCellDef="let sale">#{{ sale.id }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="client">
+          <th mat-header-cell *matHeaderCellDef>Cliente</th>
+          <td mat-cell *matCellDef="let sale">{{ sale.client?.name || '-' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="items">
+          <th mat-header-cell *matHeaderCellDef>Itens</th>
+          <td mat-cell *matCellDef="let sale">{{ sale.items.length }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="total">
+          <th mat-header-cell *matHeaderCellDef>Total</th>
+          <td mat-cell *matCellDef="let sale">{{ formatCurrency(sale.total) }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="paymentMethod">
+          <th mat-header-cell *matHeaderCellDef>Pagamento</th>
+          <td mat-cell *matCellDef="let sale">
+            <mat-chip>{{ getPaymentMethodLabel(sale.paymentMethod) }}</mat-chip>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let sale">
+            <span [class]="'status-badge status-' + sale.status">
+              {{ getStatusLabel(sale.status) }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>Data</th>
+          <td mat-cell *matCellDef="let sale">{{ sale.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Ações</th>
+          <td mat-cell *matCellDef="let sale">
+            <button mat-icon-button color="primary">
+              <mat-icon>visibility</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deleteSale(sale.id)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Dialog Nova Venda -->
+  <div class="dialog-overlay" *ngIf="showNewSaleDialog" (click)="closeNewSaleDialog()">
+    <div class="dialog-content" (click)="$event.stopPropagation()">
+      <div class="dialog-header">
+        <h2>Nova Venda</h2>
+        <button mat-icon-button (click)="closeNewSaleDialog()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div class="dialog-body">
+        <!-- Seleção de Cliente -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Cliente</mat-label>
+          <mat-select [(value)]="selectedClient">
+            <mat-option *ngFor="let client of clients" [value]="client.id">
+              {{ client.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Alerta de Erro -->
+        <mat-error *ngIf="formError" class="form-error">
+          <mat-icon>error</mat-icon>
+          {{ formError }}
+        </mat-error>
+
+        <!-- Lista de Produtos Disponíveis -->
+        <div class="products-section">
+          <h3>Adicionar Produtos</h3>
+          <div class="products-list">
+            <div *ngFor="let product of products" class="product-item">
+              <div class="product-info">
+                <div class="product-details">
+                  <strong>{{ product.name }}</strong>
+                  <div class="product-meta">
+                    <span class="product-price">{{ formatCurrency(product.price) }}</span>
+                    <span class="product-stock" [class.low-stock]="product.stock <= product.minStock">
+                      Estoque: {{ product.stock }}
+                    </span>
+                  </div>
+                </div>
+                <button 
+                  mat-mini-fab 
+                  color="primary" 
+                  (click)="addToCart(product)"
+                  [disabled]="product.stock === 0"
+                  matTooltip="Adicionar ao carrinho">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Carrinho -->
+        <div class="cart-section" *ngIf="cart.length > 0">
+          <h3>Carrinho</h3>
+          <div class="cart-items">
+            <mat-card *ngFor="let item of cart; let i = index" class="cart-item">
+              <div class="cart-item-content">
+                <div class="cart-item-info">
+                  <strong>{{ item.product?.name }}</strong>
+                  <span class="cart-item-price">
+                    {{ formatCurrency(item.unitPrice) }} x {{ item.quantity }} = {{ formatCurrency(item.subtotal) }}
+                  </span>
+                </div>
+                <div class="cart-item-actions">
+                  <button mat-icon-button (click)="decreaseQuantity(item)">
+                    <mat-icon>remove</mat-icon>
+                  </button>
+                  <span class="quantity">{{ item.quantity }}</span>
+                  <button mat-icon-button (click)="increaseQuantity(item)">
+                    <mat-icon>add</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" (click)="removeFromCart(i)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </mat-card>
+          </div>
+        </div>
+
+        <!-- Desconto e Pagamento -->
+        <div class="payment-section">
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Desconto</mat-label>
+            <input matInput type="number" [(ngModel)]="discount" min="0" [max]="getSubtotal()">
+            <span matPrefix>R$&nbsp;</span>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Forma de Pagamento</mat-label>
+            <mat-select [(value)]="paymentMethod">
+              <mat-option value="cash">Dinheiro</mat-option>
+              <mat-option value="card">Cartão</mat-option>
+              <mat-option value="credit">Crédito</mat-option>
+              <mat-option value="pix">PIX</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- Resumo dos Totais -->
+        <div class="summary-section" *ngIf="cart.length > 0">
+          <mat-card class="summary-card">
+            <h3>Resumo da Venda</h3>
+            <div class="summary-content">
+              <div class="summary-row">
+                <span>Subtotal:</span>
+                <strong>{{ formatCurrency(getSubtotal()) }}</strong>
+              </div>
+              <div class="summary-row">
+                <span>Desconto:</span>
+                <strong class="discount">-{{ formatCurrency(discount) }}</strong>
+              </div>
+              <mat-divider></mat-divider>
+              <div class="summary-row total">
+                <span>Total a Pagar:</span>
+                <strong class="total-value">{{ formatCurrency(getTotal()) }}</strong>
+              </div>
+            </div>
+          </mat-card>
+        </div>
+      </div>
+
+      <div class="dialog-footer">
+        <button mat-button (click)="closeNewSaleDialog()">Cancelar</button>
+        <button 
+          mat-raised-button 
+          color="primary" 
+          (click)="finalizeSale()"
+          [disabled]="cart.length === 0 || !selectedClient">
+          Finalizar Venda
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

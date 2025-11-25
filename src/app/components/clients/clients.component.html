@@ -1,0 +1,63 @@
+<div class="clients-container">
+  <div class="header">
+    <h1>Clientes</h1>
+    <button mat-raised-button color="primary" (click)="openClientDialog()">
+      <mat-icon>add</mat-icon>
+      Novo Cliente
+    </button>
+  </div>
+
+  <mat-card>
+    <mat-card-content>
+      <div *ngIf="loading" class="loading">
+        <mat-spinner></mat-spinner>
+      </div>
+
+      <table mat-table [dataSource]="clients" *ngIf="!loading" class="full-width">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Nome</th>
+          <td mat-cell *matCellDef="let client">{{ client.name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef>E-mail</th>
+          <td mat-cell *matCellDef="let client">{{ client.email || '-' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="phone">
+          <th mat-header-cell *matHeaderCellDef>Telefone</th>
+          <td mat-cell *matCellDef="let client">{{ client.phone || '-' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="creditLimit">
+          <th mat-header-cell *matHeaderCellDef>Limite de Crédito</th>
+          <td mat-cell *matCellDef="let client">{{ formatCurrency(client.creditLimit) }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="currentDebt">
+          <th mat-header-cell *matHeaderCellDef>Débito Atual</th>
+          <td mat-cell *matCellDef="let client">
+            <span [class.debt-warning]="client.currentDebt > 0">
+              {{ formatCurrency(client.currentDebt) }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Ações</th>
+          <td mat-cell *matCellDef="let client">
+            <button mat-icon-button color="primary" (click)="openClientDialog(client)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deleteClient(client.id)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+</div>
