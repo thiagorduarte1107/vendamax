@@ -74,11 +74,41 @@ export class PdvComponent {
   
   // Mock de produtos disponíveis
   availableProducts = [
-    { id: 1, name: 'Notebook Dell', price: 3500.00, stock: 10 },
-    { id: 2, name: 'Mouse Logitech', price: 89.90, stock: 50 },
-    { id: 3, name: 'Teclado Mecânico', price: 450.00, stock: 25 },
-    { id: 4, name: 'Monitor LG 24"', price: 899.00, stock: 15 },
-    { id: 5, name: 'Webcam HD', price: 250.00, stock: 30 }
+    { 
+      id: 1, 
+      name: 'Notebook Dell', 
+      price: 3500.00, 
+      stock: 10, 
+      imageUrl: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=400&fit=crop' 
+    },
+    { 
+      id: 2, 
+      name: 'Mouse Logitech', 
+      price: 89.90, 
+      stock: 50, 
+      imageUrl: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&h=400&fit=crop' 
+    },
+    { 
+      id: 3, 
+      name: 'Teclado Mecânico', 
+      price: 450.00, 
+      stock: 25, 
+      imageUrl: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=400&fit=crop' 
+    },
+    { 
+      id: 4, 
+      name: 'Monitor LG 24"', 
+      price: 899.00, 
+      stock: 15, 
+      imageUrl: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&h=400&fit=crop' 
+    },
+    { 
+      id: 5, 
+      name: 'Webcam HD', 
+      price: 250.00, 
+      stock: 30, 
+      imageUrl: 'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=400&h=400&fit=crop' 
+    }
   ];
 
   get subtotal(): number {

@@ -29,8 +29,16 @@
                 mat-raised-button 
                 class="product-btn"
                 (click)="addProduct(product.id)">
+                <div class="product-image-container">
+                  @if (product.imageUrl) {
+                    <img [src]="product.imageUrl" [alt]="product.name" class="product-image">
+                  } @else {
+                    <div class="product-no-image">
+                      <mat-icon>image</mat-icon>
+                    </div>
+                  }
+                </div>
                 <div class="product-info">
-                  <mat-icon>shopping_cart</mat-icon>
                   <span class="product-name">{{ product.name }}</span>
                   <span class="product-price">R$ {{ product.price.toFixed(2) }}</span>
                   <span class="product-stock">Estoque: {{ product.stock }}</span>

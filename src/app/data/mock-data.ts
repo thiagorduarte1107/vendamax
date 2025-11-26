@@ -20,7 +20,7 @@ export const mockProducts: Product[] = [
     price: 8.99,
     stock: 45,
     minStock: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1559302995-f1d8642c6806?w=300',
+    imageUrl: 'https://images.unsplash.com/photo-1554866585-cd94860890b7?w=400&h=400&fit=crop',
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-15')
   },
@@ -33,7 +33,7 @@ export const mockProducts: Product[] = [
     price: 6.99,
     stock: 8,
     minStock: 15,
-    imageUrl: 'https://images.unsplash.com/photo-1585672077161-1b3b4b5c1a0a?w=300',
+    imageUrl: 'https://images.unsplash.com/photo-1599490659213-e2b9527bd087?w=400&h=400&fit=crop',
     createdAt: new Date('2024-01-02'),
     updatedAt: new Date('2024-01-16')
   },
@@ -46,7 +46,7 @@ export const mockProducts: Product[] = [
     price: 18.99,
     stock: 25,
     minStock: 5,
-    imageUrl: 'https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=300',
+    imageUrl: 'https://images.unsplash.com/photo-1563453392212-326f5e854473?w=400&h=400&fit=crop',
     createdAt: new Date('2024-01-03'),
     updatedAt: new Date('2024-01-17')
   },
@@ -59,7 +59,7 @@ export const mockProducts: Product[] = [
     price: 14.99,
     stock: 30,
     minStock: 8,
-    imageUrl: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=300',
+    imageUrl: 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=400&h=400&fit=crop',
     createdAt: new Date('2024-01-04'),
     updatedAt: new Date('2024-01-18')
   },
@@ -72,7 +72,7 @@ export const mockProducts: Product[] = [
     price: 12.99,
     stock: 15,
     minStock: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300',
+    imageUrl: 'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=400&h=400&fit=crop',
     createdAt: new Date('2024-01-05'),
     updatedAt: new Date('2024-01-19')
   },
@@ -85,7 +85,7 @@ export const mockProducts: Product[] = [
     price: 7.99,
     stock: 50,
     minStock: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1603833777053-a5397a278a5a?w=300',
+    imageUrl: 'https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?w=400&h=400&fit=crop',
     createdAt: new Date('2024-01-06'),
     updatedAt: new Date('2024-01-20')
   },
@@ -98,7 +98,7 @@ export const mockProducts: Product[] = [
     price: 5.49,
     stock: 3,
     minStock: 12,
-    imageUrl: 'https://images.unsplash.com/photo-1571091718767-18b5b145aadd?w=300',
+    imageUrl: 'https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=400&h=400&fit=crop',
     createdAt: new Date('2024-01-07'),
     updatedAt: new Date('2024-01-21')
   },
@@ -111,7 +111,7 @@ export const mockProducts: Product[] = [
     price: 3.29,
     stock: 60,
     minStock: 20,
-    imageUrl: 'https://images.unsplash.com/photo-1584212261402-3a5bcf1f5d6b?w=300',
+    imageUrl: 'https://images.unsplash.com/photo-1585421514738-01798e348b17?w=400&h=400&fit=crop',
     createdAt: new Date('2024-01-08'),
     updatedAt: new Date('2024-01-22')
   }
