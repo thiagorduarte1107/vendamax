@@ -3,7 +3,38 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: 'admin' | 'user';
+  password?: string;
+  role: UserRole;
+  permissions: UserPermissions;
+  active: boolean;
+  lastLogin?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export type UserRole = 'admin' | 'manager' | 'seller' | 'cashier';
+
+export interface UserPermissions {
+  dashboard: boolean;
+  products: boolean;
+  clients: boolean;
+  sales: boolean;
+  pdv: boolean;
+  reports: boolean;
+  stock: boolean;
+  financial: boolean;
+  users: boolean;
+  settings: boolean;
+}
+
+export interface UserActivity {
+  id: string;
+  userId: string;
+  user?: User;
+  action: string;
+  module: string;
+  description: string;
+  ipAddress?: string;
   createdAt: Date;
 }
 

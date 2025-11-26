@@ -2,7 +2,42 @@
   <div class="header">
     <div>
       <h1>Dashboard</h1>
-      <p class="subtitle">Visão geral do seu negócio</p>
+      <p class="subtitle">Visão geral do seu negócio - {{ getPeriodLabel() }}</p>
+    </div>
+    <div class="header-actions">
+      <button mat-icon-button [matMenuTriggerFor]="periodMenu" matTooltip="Filtrar Período">
+        <mat-icon>date_range</mat-icon>
+      </button>
+      <mat-menu #periodMenu="matMenu">
+        <button mat-menu-item (click)="applyPeriodFilter('today')">
+          <mat-icon>today</mat-icon>
+          <span>Hoje</span>
+        </button>
+        <button mat-menu-item (click)="applyPeriodFilter('week')">
+          <mat-icon>view_week</mat-icon>
+          <span>Esta Semana</span>
+        </button>
+        <button mat-menu-item (click)="applyPeriodFilter('month')">
+          <mat-icon>calendar_month</mat-icon>
+          <span>Este Mês</span>
+        </button>
+        <button mat-menu-item (click)="applyPeriodFilter('quarter')">
+          <mat-icon>calendar_view_month</mat-icon>
+          <span>Este Trimestre</span>
+        </button>
+        <button mat-menu-item (click)="applyPeriodFilter('year')">
+          <mat-icon>calendar_today</mat-icon>
+          <span>Este Ano</span>
+        </button>
+      </mat-menu>
+
+      <button mat-icon-button (click)="toggleComparison()" matTooltip="Comparar Períodos">
+        <mat-icon>compare_arrows</mat-icon>
+      </button>
+
+      <button mat-icon-button (click)="exportDashboardAsPDF()" matTooltip="Exportar PDF">
+        <mat-icon>picture_as_pdf</mat-icon>
+      </button>
     </div>
   </div>
 
@@ -76,6 +111,40 @@
           </div>
         </mat-card-content>
       </mat-card>
+
+      <!-- Margem de Lucro -->
+      <mat-card class="metric-card">
+        <mat-card-content>
+          <div class="metric-icon profit">
+            <mat-icon>trending_up</mat-icon>
+          </div>
+          <div class="metric-info">
+            <h3>Margem de Lucro</h3>
+            <p class="metric-value">{{ getProfitMargin().toFixed(1) }}%</p>
+            <div class="metric-trend" [class.up]="getProfitMargin() > 0" [class.down]="getProfitMargin() < 0">
+              <mat-icon>{{ getProfitMargin() > 0 ? 'trending_up' : 'trending_down' }}</mat-icon>
+              <span>{{ getProfitMargin() > 0 ? 'Positiva' : 'Negativa' }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- ROI -->
+      <mat-card class="metric-card">
+        <mat-card-content>
+          <div class="metric-icon roi">
+            <mat-icon>analytics</mat-icon>
+          </div>
+          <div class="metric-info">
+            <h3>ROI</h3>
+            <p class="metric-value">{{ getROI().toFixed(1) }}%</p>
+            <div class="metric-trend" [class.up]="getROI() > 0" [class.down]="getROI() < 0">
+              <mat-icon>{{ getROI() > 0 ? 'trending_up' : 'trending_down' }}</mat-icon>
+              <span>Retorno sobre Investimento</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
     </div>
 
     <!-- Gráficos -->
@@ -88,9 +157,12 @@
             Vendas por Período
           </mat-card-title>
           <mat-card-subtitle>Últimos 6 meses</mat-card-subtitle>
+          <button mat-icon-button (click)="exportChartAsPNG('salesChart')" matTooltip="Exportar PNG">
+            <mat-icon>download</mat-icon>
+          </button>
         </mat-card-header>
         <mat-card-content>
-          <div class="chart-container">
+          <div id="salesChart" class="chart-container">
             <canvas baseChart
               [data]="salesChartData"
               [options]="salesChartOptions"
@@ -143,23 +215,35 @@
 
     <!-- Alerta de Estoque -->
     <mat-card class="alert-card" *ngIf="metrics.lowStockProducts > 0">
-      <mat-card-header>
-        <mat-card-title class="alert-title">
-          <mat-icon>warning</mat-icon>
-          Alerta de Estoque
-        </mat-card-title>
-        <mat-card-subtitle>
-          Produtos com estoque baixo que precisam de atenção
-        </mat-card-subtitle>
-      </mat-card-header>
       <mat-card-content>
-        <div class="alert-content">
-          <span class="alert-value">{{ metrics.lowStockProducts }}</span>
-          <mat-chip class="alert-badge">Requer reposição</mat-chip>
+        <div class="alert-header">
+          <div class="alert-icon-container">
+            <mat-icon class="alert-icon">warning</mat-icon>
+          </div>
+          <div class="alert-info">
+            <h3 class="alert-title">Alerta de Estoque</h3>
+            <p class="alert-subtitle">Produtos com estoque baixo que precisam de atenção</p>
+          </div>
         </div>
-        <button mat-raised-button color="warn" class="alert-button" routerLink="/products">
-          Ver Produtos
-        </button>
+        <div class="alert-body">
+          <div class="alert-stats">
+            <div class="alert-stat-item">
+              <span class="alert-stat-value">{{ metrics.lowStockProducts }}</span>
+              <span class="alert-stat-label">Produtos</span>
+            </div>
+            <div class="alert-stat-divider"></div>
+            <div class="alert-stat-item">
+              <mat-chip class="alert-badge">
+                <mat-icon>priority_high</mat-icon>
+                Requer reposição
+              </mat-chip>
+            </div>
+          </div>
+          <button mat-raised-button color="warn" class="alert-button" routerLink="/products">
+            <mat-icon>visibility</mat-icon>
+            Ver Produtos
+          </button>
+        </div>
       </mat-card-content>
     </mat-card>
 
@@ -170,17 +254,33 @@
           <mat-icon>inventory_2</mat-icon>
           Produtos com Estoque Baixo
         </mat-card-title>
+        <mat-card-subtitle>{{ lowStockProducts.length }} produto(s) precisam de reposição</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
-        <mat-list>
-          <mat-list-item *ngFor="let product of lowStockProducts">
-            <mat-icon matListItemIcon color="warn">inventory_2</mat-icon>
-            <div matListItemTitle>{{ product.name }}</div>
-            <div matListItemLine>
-              Estoque: {{ product.stock }} / Mínimo: {{ product.minStock }}
+        <div class="low-stock-list">
+          <div class="low-stock-item" *ngFor="let product of lowStockProducts">
+            <div class="product-icon-wrapper">
+              <mat-icon class="product-icon">inventory_2</mat-icon>
             </div>
-          </mat-list-item>
-        </mat-list>
+            <div class="product-details">
+              <div class="product-name">{{ product.name }}</div>
+              <div class="product-category" *ngIf="product.category">{{ product.category.name }}</div>
+            </div>
+            <div class="stock-info">
+              <div class="stock-bar-container">
+                <div class="stock-bar" [style.width.%]="(product.stock / product.minStock) * 100"></div>
+              </div>
+              <div class="stock-numbers">
+                <span class="current-stock">{{ product.stock }}</span>
+                <span class="stock-separator">/</span>
+                <span class="min-stock">{{ product.minStock }}</span>
+              </div>
+            </div>
+            <button mat-icon-button color="primary" routerLink="/stock-control" matTooltip="Adicionar Estoque">
+              <mat-icon>add_circle</mat-icon>
+            </button>
+          </div>
+        </div>
       </mat-card-content>
     </mat-card>
 

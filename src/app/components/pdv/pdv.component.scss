@@ -6,19 +6,109 @@
   margin: 0 auto;
 
   .header {
-    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: hsl(var(--card));
+    border-radius: var(--radius);
+    border: 1px solid hsl(var(--border));
 
-    h1 {
-      margin: 0 0 0.5rem 0;
-      color: hsl(var(--foreground));
-      font-size: 1.875rem;
-      font-weight: 400;
+    .header-left {
+      h1 {
+        margin: 0 0 0.25rem 0;
+        color: hsl(var(--foreground));
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
+
+      .subtitle {
+        margin: 0;
+        color: hsl(var(--muted-foreground));
+        font-size: 0.875rem;
+      }
     }
 
-    .subtitle {
-      margin: 0;
-      color: hsl(var(--muted-foreground));
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      .cash-status {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        border-radius: var(--radius);
+        border: 2px solid;
+        
+        &.open {
+          background: hsl(142 71% 45% / 0.1);
+          border-color: hsl(142 71% 45%);
+          color: hsl(142 71% 45%);
+        }
+
+        &.closed {
+          background: hsl(var(--destructive) / 0.1);
+          border-color: hsl(var(--destructive));
+          color: hsl(var(--destructive));
+        }
+
+        mat-icon {
+          font-size: 1.5rem;
+          width: 1.5rem;
+          height: 1.5rem;
+        }
+
+        .cash-info {
+          display: flex;
+          flex-direction: column;
+          gap: 0.125rem;
+
+          .cash-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+
+          .cash-balance {
+            font-size: 1.125rem;
+            font-weight: 700;
+          }
+        }
+      }
+    }
+  }
+
+  .shortcuts-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    background: hsl(var(--muted) / 0.3);
+    border-radius: var(--radius);
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+
+    .shortcut {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
       font-size: 0.875rem;
+      color: hsl(var(--muted-foreground));
+
+      kbd {
+        padding: 0.25rem 0.5rem;
+        background: hsl(var(--card));
+        border: 1px solid hsl(var(--border));
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: hsl(var(--foreground));
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      }
     }
   }
 

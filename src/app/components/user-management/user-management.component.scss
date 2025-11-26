@@ -1,0 +1,104 @@
+.user-management-container {
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+
+    h1 {
+      margin: 0 0 0.25rem 0;
+      color: hsl(var(--foreground));
+      font-size: 1.875rem;
+      font-weight: 400;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: hsl(var(--muted-foreground));
+      font-size: 0.875rem;
+    }
+
+    button {
+      mat-icon {
+        margin-right: 0.5rem;
+      }
+    }
+  }
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  .user-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+}
+
+mat-chip {
+  font-size: 0.75rem;
+  font-weight: 500;
+
+  &.role-admin {
+    background: hsl(var(--destructive) / 0.1);
+    color: hsl(var(--destructive));
+  }
+
+  &.role-manager {
+    background: hsl(var(--primary) / 0.1);
+    color: hsl(var(--primary));
+  }
+
+  &.role-seller {
+    background: hsl(221 83% 53% / 0.1);
+    color: hsl(221 83% 53%);
+  }
+
+  &.role-cashier {
+    background: hsl(142 71% 45% / 0.1);
+    color: hsl(142 71% 45%);
+  }
+
+  &.status-active {
+    background: hsl(142 71% 45% / 0.1);
+    color: hsl(142 71% 45%);
+  }
+
+  &.status-inactive {
+    background: hsl(var(--muted));
+    color: hsl(var(--muted-foreground));
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 1rem;
+
+    button {
+      width: 100%;
+    }
+  }
+}

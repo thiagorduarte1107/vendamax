@@ -34,7 +34,8 @@ export class LayoutComponent implements OnInit {
     { icon: 'assessment', label: 'Relatório de Vendas', route: '/sales-report' },
     { icon: 'category', label: 'Categorias', route: '/categories' },
     { icon: 'account_balance_wallet', label: 'Contas a Receber', route: '/accounts-receivable' },
-    { icon: 'receipt', label: 'Contas a Pagar', route: '/accounts-payable' }
+    { icon: 'receipt', label: 'Contas a Pagar', route: '/accounts-payable' },
+    { icon: 'manage_accounts', label: 'Usuários', route: '/user-management' }
   ];
 
   constructor(

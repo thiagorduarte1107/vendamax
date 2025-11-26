@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -9,6 +9,10 @@ import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import jsPDF from 'jspdf';
 
 interface CartItem {
@@ -26,6 +30,24 @@ interface Payment {
   installmentValue?: number;
 }
 
+interface CashRegister {
+  isOpen: boolean;
+  openedAt?: Date;
+  openingBalance: number;
+  currentBalance: number;
+  sales: number;
+  withdrawals: number;
+  deposits: number;
+}
+
+interface DailySale {
+  id: number;
+  time: string;
+  total: number;
+  paymentMethod: string;
+  items: number;
+}
+
 @Component({
   selector: 'app-pdv',
   standalone: true,
@@ -39,12 +61,16 @@ interface Payment {
     MatTableModule,
     MatCardModule,
     MatSelectModule,
-    MatDividerModule
+    MatDividerModule,
+    MatDialogModule,
+    MatSnackBarModule,
+    MatBadgeModule,
+    MatTooltipModule
   ],
   templateUrl: './pdv.component.html',
   styleUrl: './pdv.component.scss'
 })
-export class PdvComponent {
+export class PdvComponent implements OnInit {
   searchProduct = '';
   cart: CartItem[] = [];
   displayedColumns: string[] = ['name', 'price', 'quantity', 'subtotal', 'actions'];
@@ -71,6 +97,23 @@ export class PdvComponent {
     10: 8,
     12: 10
   };
+
+  // Caixa
+  cashRegister: CashRegister = {
+    isOpen: false,
+    openingBalance: 0,
+    currentBalance: 0,
+    sales: 0,
+    withdrawals: 0,
+    deposits: 0
+  };
+
+  // Histórico de vendas do dia
+  dailySales: DailySale[] = [];
+  showDailySales = false;
+
+  // Código de barras
+  barcodeInput = '';
   
   // Mock de produtos disponíveis
   availableProducts = [
@@ -144,6 +187,348 @@ export class PdvComponent {
 
   get totalWithInstallmentFee(): number {
     return this.installmentValue * this.installments;
+  }
+
+  constructor(
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar
+  ) {}
+
+  ngOnInit(): void {
+    this.loadCashRegister();
+    this.loadDailySales();
+  }
+
+  // Atalhos de teclado
+  @HostListener('window:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent): void {
+    // F2 - Finalizar venda
+    if (event.key === 'F2') {
+      event.preventDefault();
+      if (this.cart.length > 0) {
+        this.finalizeSale();
+      }
+    }
+    
+    // F3 - Limpar carrinho
+    if (event.key === 'F3') {
+      event.preventDefault();
+      this.clearCart();
+    }
+    
+    // F4 - Abrir pagamento
+    if (event.key === 'F4') {
+      event.preventDefault();
+      if (this.cart.length > 0) {
+        this.showPaymentModal = true;
+      }
+    }
+    
+    // F5 - Histórico do dia
+    if (event.key === 'F5') {
+      event.preventDefault();
+      this.toggleDailySales();
+    }
+    
+    // F8 - Sangria
+    if (event.key === 'F8') {
+      event.preventDefault();
+      if (this.cashRegister.isOpen) {
+        this.openWithdrawalDialog();
+      }
+    }
+    
+    // F9 - Suprimento
+    if (event.key === 'F9') {
+      event.preventDefault();
+      if (this.cashRegister.isOpen) {
+        this.openDepositDialog();
+      }
+    }
+    
+    // ESC - Cancelar/Fechar modais
+    if (event.key === 'Escape') {
+      this.showPaymentModal = false;
+      this.showDailySales = false;
+    }
+  }
+
+  // Código de barras
+  onBarcodeInput(event: any): void {
+    const barcode = event.target.value;
+    if (barcode.length >= 8) {
+      const product = this.availableProducts.find(p => p.id.toString() === barcode);
+      if (product) {
+        this.addProduct(product.id);
+        this.barcodeInput = '';
+        this.showSnackBar(`${product.name} adicionado!`);
+      } else {
+        this.showSnackBar('Produto não encontrado!', 'error');
+      }
+    }
+  }
+
+  // Caixa
+  loadCashRegister(): void {
+    const stored = localStorage.getItem('cashRegister');
+    if (stored) {
+      this.cashRegister = JSON.parse(stored);
+    }
+  }
+
+  saveCashRegister(): void {
+    localStorage.setItem('cashRegister', JSON.stringify(this.cashRegister));
+  }
+
+  showOpenCashDialog(): void {
+    const balance = prompt('Digite o saldo inicial do caixa:');
+    if (balance) {
+      const value = parseFloat(balance);
+      if (value >= 0) {
+        this.openCashRegister(value);
+      } else {
+        this.showSnackBar('Valor inválido!', 'error');
+      }
+    }
+  }
+
+  openCashRegister(openingBalance: number): void {
+    this.cashRegister = {
+      isOpen: true,
+      openedAt: new Date(),
+      openingBalance,
+      currentBalance: openingBalance,
+      sales: 0,
+      withdrawals: 0,
+      deposits: 0
+    };
+    this.saveCashRegister();
+    this.showSnackBar('Caixa aberto com sucesso!');
+  }
+
+  closeCashRegister(): void {
+    if (!this.cashRegister.isOpen) return;
+    
+    const report = `
+      Abertura: ${this.cashRegister.openedAt?.toLocaleString()}
+      Saldo Inicial: R$ ${this.cashRegister.openingBalance.toFixed(2)}
+      Vendas: R$ ${this.cashRegister.sales.toFixed(2)}
+      Sangrias: R$ ${this.cashRegister.withdrawals.toFixed(2)}
+      Suprimentos: R$ ${this.cashRegister.deposits.toFixed(2)}
+      Saldo Final: R$ ${this.cashRegister.currentBalance.toFixed(2)}
+    `;
+    
+    if (confirm(`Deseja fechar o caixa?\n${report}`)) {
+      this.cashRegister.isOpen = false;
+      this.saveCashRegister();
+      this.showSnackBar('Caixa fechado com sucesso!');
+    }
+  }
+
+  openWithdrawalDialog(): void {
+    const amount = prompt('Digite o valor da sangria:');
+    if (amount) {
+      const value = parseFloat(amount);
+      if (value > 0 && value <= this.cashRegister.currentBalance) {
+        this.cashRegister.withdrawals += value;
+        this.cashRegister.currentBalance -= value;
+        this.saveCashRegister();
+        this.showSnackBar(`Sangria de R$ ${value.toFixed(2)} realizada!`);
+      } else {
+        this.showSnackBar('Valor inválido!', 'error');
+      }
+    }
+  }
+
+  openDepositDialog(): void {
+    const amount = prompt('Digite o valor do suprimento:');
+    if (amount) {
+      const value = parseFloat(amount);
+      if (value > 0) {
+        this.cashRegister.deposits += value;
+        this.cashRegister.currentBalance += value;
+        this.saveCashRegister();
+        this.showSnackBar(`Suprimento de R$ ${value.toFixed(2)} realizado!`);
+      } else {
+        this.showSnackBar('Valor inválido!', 'error');
+      }
+    }
+  }
+
+  // Histórico de vendas
+  loadDailySales(): void {
+    const stored = localStorage.getItem('dailySales');
+    if (stored) {
+      this.dailySales = JSON.parse(stored);
+    }
+  }
+
+  saveDailySale(sale: DailySale): void {
+    this.dailySales.push(sale);
+    localStorage.setItem('dailySales', JSON.stringify(this.dailySales));
+  }
+
+  toggleDailySales(): void {
+    this.showDailySales = !this.showDailySales;
+  }
+
+  getTodaysSalesTotal(): number {
+    return this.dailySales.reduce((sum, sale) => sum + sale.total, 0);
+  }
+
+  getTodaysSalesCount(): number {
+    return this.dailySales.length;
+  }
+
+  exportDailySalesToPDF(): void {
+    const doc = new jsPDF({
+      format: 'a4',
+      unit: 'mm'
+    });
+
+    const pageWidth = doc.internal.pageSize.getWidth();
+    let yPos = 15;
+
+    // Linha de recorte superior
+    doc.setLineWidth(0.3);
+    doc.setDrawColor(200, 200, 200);
+    doc.line(10, yPos, pageWidth - 10, yPos);
+    
+    yPos += 8;
+
+    // Cabeçalho
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(20);
+    doc.setFont('helvetica', 'bold');
+    doc.text('RELATÓRIO DE VENDAS', pageWidth / 2, yPos, { align: 'center' });
+    
+    yPos += 6;
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    const today = new Date().toLocaleDateString('pt-BR', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+    doc.text(today, pageWidth / 2, yPos, { align: 'center' });
+    
+    yPos += 8;
+    doc.setLineWidth(0.5);
+    doc.setDrawColor(0, 0, 0);
+    doc.line(20, yPos, pageWidth - 20, yPos);
+
+    // Informações do Caixa
+    yPos += 15;
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Informações do Caixa', 20, yPos);
+    
+    yPos += 8;
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    
+    if (this.cashRegister.openedAt) {
+      doc.text(`Abertura: ${new Date(this.cashRegister.openedAt).toLocaleString('pt-BR')}`, 20, yPos);
+      yPos += 6;
+    }
+    
+    doc.text(`Saldo Inicial: R$ ${this.cashRegister.openingBalance.toFixed(2)}`, 20, yPos);
+    yPos += 6;
+    doc.text(`Vendas: R$ ${this.cashRegister.sales.toFixed(2)}`, 20, yPos);
+    yPos += 6;
+    doc.text(`Sangrias: R$ ${this.cashRegister.withdrawals.toFixed(2)}`, 20, yPos);
+    yPos += 6;
+    doc.text(`Suprimentos: R$ ${this.cashRegister.deposits.toFixed(2)}`, 20, yPos);
+    yPos += 6;
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Saldo Atual: R$ ${this.cashRegister.currentBalance.toFixed(2)}`, 20, yPos);
+
+    // Resumo de Vendas
+    yPos += 15;
+    doc.setFontSize(12);
+    doc.text('Resumo de Vendas', 20, yPos);
+    
+    yPos += 8;
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Total de Vendas: ${this.getTodaysSalesCount()}`, 20, yPos);
+    yPos += 6;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.text(`Faturamento Total: R$ ${this.getTodaysSalesTotal().toFixed(2)}`, 20, yPos);
+
+    // Tabela de Vendas
+    yPos += 15;
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Detalhamento das Vendas', 20, yPos);
+
+    yPos += 8;
+    doc.setFontSize(9);
+    
+    // Cabeçalho da tabela
+    doc.setFillColor(240, 240, 240);
+    doc.rect(20, yPos - 5, pageWidth - 40, 8, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.text('#', 25, yPos);
+    doc.text('Hora', 40, yPos);
+    doc.text('Itens', 70, yPos);
+    doc.text('Pagamento', 95, yPos);
+    doc.text('Valor', pageWidth - 25, yPos, { align: 'right' });
+
+    yPos += 8;
+    doc.setFont('helvetica', 'normal');
+
+    // Linhas da tabela
+    this.dailySales.forEach((sale, index) => {
+      if (yPos > 270) {
+        doc.addPage();
+        yPos = 20;
+      }
+
+      doc.text(`${index + 1}`, 25, yPos);
+      doc.text(sale.time, 40, yPos);
+      doc.text(`${sale.items}`, 70, yPos);
+      doc.text(this.getPaymentMethodLabel(sale.paymentMethod), 95, yPos);
+      doc.text(`R$ ${sale.total.toFixed(2)}`, pageWidth - 25, yPos, { align: 'right' });
+      
+      yPos += 7;
+    });
+
+    // Linha final
+    yPos += 5;
+    doc.setLineWidth(0.5);
+    doc.line(20, yPos, pageWidth - 20, yPos);
+
+    // Total
+    yPos += 8;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.text('TOTAL:', pageWidth - 70, yPos);
+    doc.text(`R$ ${this.getTodaysSalesTotal().toFixed(2)}`, pageWidth - 25, yPos, { align: 'right' });
+
+    // Rodapé
+    yPos += 20;
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'italic');
+    doc.text(`Relatório gerado em: ${new Date().toLocaleString('pt-BR')}`, pageWidth / 2, yPos, { align: 'center' });
+
+    // Salvar PDF
+    const filename = `vendas-${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.pdf`;
+    doc.save(filename);
+    
+    this.showSnackBar('Relatório exportado com sucesso!');
+  }
+
+  // Utilitários
+  showSnackBar(message: string, type: 'success' | 'error' = 'success'): void {
+    this.snackBar.open(message, 'Fechar', {
+      duration: 3000,
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
+      panelClass: type === 'error' ? ['error-snackbar'] : ['success-snackbar']
+    });
   }
 
   addProduct(productId: number): void {
@@ -391,12 +776,17 @@ export class PdvComponent {
 
   finalizeSale(): void {
     if (this.cart.length === 0) {
-      alert('Carrinho vazio!');
+      this.showSnackBar('Carrinho vazio!', 'error');
       return;
     }
 
     if (this.remaining > 0) {
-      alert(`Falta pagar: R$ ${this.remaining.toFixed(2)}`);
+      this.showSnackBar(`Falta pagar: R$ ${this.remaining.toFixed(2)}`, 'error');
+      return;
+    }
+
+    if (!this.cashRegister.isOpen) {
+      this.showSnackBar('Caixa fechado! Abra o caixa para realizar vendas.', 'error');
       return;
     }
 
@@ -411,15 +801,31 @@ export class PdvComponent {
       date: new Date()
     };
 
+    // Registrar venda no histórico
+    const dailySale: DailySale = {
+      id: Date.now(),
+      time: new Date().toLocaleTimeString('pt-BR'),
+      total: this.total,
+      paymentMethod: this.payments.map(p => p.method).join(', '),
+      items: this.cart.length
+    };
+    this.saveDailySale(dailySale);
+
+    // Atualizar caixa
+    this.cashRegister.sales += this.total;
+    this.cashRegister.currentBalance += this.total;
+    this.saveCashRegister();
+
     console.log('Venda finalizada:', saleData);
     
     // Perguntar se deseja imprimir cupom
-    const printCupom = confirm('Venda finalizada com sucesso!\\n\\nDeseja imprimir o cupom?');
+    const printCupom = confirm('Venda finalizada com sucesso!\n\nDeseja imprimir o cupom?');
     
     if (printCupom) {
       this.printReceipt();
     }
     
+    this.showSnackBar('Venda finalizada com sucesso!');
     this.clearCart();
   }
 }

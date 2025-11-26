@@ -12,6 +12,7 @@ import { AccountsPayableComponent } from './components/accounts-payable/accounts
 import { PdvComponent } from './components/pdv/pdv.component';
 import { SalesReportComponent } from './components/sales-report/sales-report.component';
 import { StockControlComponent } from './components/stock-control/stock-control.component';
+import { UserManagementComponent } from './components/user-management/user-management.component';
 import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
@@ -31,7 +32,8 @@ const routes: Routes = [
       { path: 'sales-report', component: SalesReportComponent },
       { path: 'categories', component: CategoriesComponent },
       { path: 'accounts-receivable', component: AccountsReceivableComponent },
-      { path: 'accounts-payable', component: AccountsPayableComponent }
+      { path: 'accounts-payable', component: AccountsPayableComponent },
+      { path: 'user-management', component: UserManagementComponent }
     ]
   },
   { path: '**', redirectTo: '' }

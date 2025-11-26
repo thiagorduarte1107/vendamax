@@ -1,8 +1,58 @@
 <div class="pdv-container">
   <!-- Header -->
   <div class="header">
-    <h1>PDV - Ponto de Venda</h1>
-    <p class="subtitle">Sistema de vendas rápido e eficiente</p>
+    <div class="header-left">
+      <h1>PDV - Ponto de Venda</h1>
+      <p class="subtitle">Sistema de vendas rápido e eficiente</p>
+    </div>
+    <div class="header-right">
+      <!-- Status do Caixa -->
+      <div class="cash-status" [class.open]="cashRegister.isOpen" [class.closed]="!cashRegister.isOpen">
+        <mat-icon>{{ cashRegister.isOpen ? 'lock_open' : 'lock' }}</mat-icon>
+        <div class="cash-info">
+          <span class="cash-label">{{ cashRegister.isOpen ? 'Caixa Aberto' : 'Caixa Fechado' }}</span>
+          <span class="cash-balance" *ngIf="cashRegister.isOpen">R$ {{ cashRegister.currentBalance.toFixed(2) }}</span>
+        </div>
+      </div>
+      
+      <!-- Botões de Controle -->
+      <button mat-raised-button color="primary" *ngIf="!cashRegister.isOpen" (click)="showOpenCashDialog()">
+        <mat-icon>lock_open</mat-icon>
+        Abrir Caixa
+      </button>
+      <button mat-raised-button color="warn" *ngIf="cashRegister.isOpen" (click)="closeCashRegister()">
+        <mat-icon>lock</mat-icon>
+        Fechar Caixa
+      </button>
+      
+      <!-- Botão Histórico -->
+      <button mat-icon-button (click)="toggleDailySales()" matTooltip="Histórico do Dia (F5)">
+        <mat-icon [matBadge]="getTodaysSalesCount()" matBadgeColor="accent">history</mat-icon>
+      </button>
+      
+      <!-- Botão Exportar PDF -->
+      <button mat-icon-button (click)="exportDailySalesToPDF()" matTooltip="Exportar Relatório PDF" *ngIf="getTodaysSalesCount() > 0">
+        <mat-icon>picture_as_pdf</mat-icon>
+      </button>
+      
+      <!-- Botões Sangria/Suprimento -->
+      <button mat-icon-button *ngIf="cashRegister.isOpen" (click)="openWithdrawalDialog()" matTooltip="Sangria (F8)">
+        <mat-icon>remove_circle</mat-icon>
+      </button>
+      <button mat-icon-button *ngIf="cashRegister.isOpen" (click)="openDepositDialog()" matTooltip="Suprimento (F9)">
+        <mat-icon>add_circle</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Atalhos de Teclado -->
+  <div class="shortcuts-bar">
+    <span class="shortcut"><kbd>F2</kbd> Finalizar</span>
+    <span class="shortcut"><kbd>F3</kbd> Limpar</span>
+    <span class="shortcut"><kbd>F4</kbd> Pagamento</span>
+    <span class="shortcut"><kbd>F5</kbd> Histórico</span>
+    <span class="shortcut"><kbd>F8</kbd> Sangria</span>
+    <span class="shortcut"><kbd>F9</kbd> Suprimento</span>
   </div>
 
   <div class="pdv-content">

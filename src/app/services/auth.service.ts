@@ -16,8 +16,15 @@ export class AuthService {
     // Check if user is already logged in
     const storedUser = localStorage.getItem('currentUser');
     if (storedUser) {
-      this.currentUserSubject.next(JSON.parse(storedUser));
-      this.isAuthenticatedSubject.next(true);
+      const user = JSON.parse(storedUser);
+      // Garantir que o usuário tenha todas as propriedades necessárias
+      if (user && !user.permissions) {
+        // Usuário antigo, fazer logout
+        localStorage.removeItem('currentUser');
+      } else {
+        this.currentUserSubject.next(user);
+        this.isAuthenticatedSubject.next(true);
+      }
     }
   }
 
@@ -28,7 +35,21 @@ export class AuthService {
       name: 'Usuário Demo',
       email: credentials.email,
       role: 'admin',
-      createdAt: new Date()
+      permissions: {
+        dashboard: true,
+        products: true,
+        clients: true,
+        sales: true,
+        pdv: true,
+        reports: true,
+        stock: true,
+        financial: true,
+        users: true,
+        settings: true
+      },
+      active: true,
+      createdAt: new Date(),
+      updatedAt: new Date()
     };
 
     return of(mockUser).pipe(
