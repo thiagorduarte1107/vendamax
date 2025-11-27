@@ -14,6 +14,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
+import { ConfirmationService } from '../../services/confirmation.service';
 
 interface CompanyData {
   name: string;
@@ -86,7 +87,8 @@ export class SettingsComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -219,11 +221,13 @@ export class SettingsComponent implements OnInit {
       return;
     }
 
-    if (confirm(`Deseja realmente excluir o usuário ${user.name}?`)) {
-      this.users = this.users.filter(u => u.id !== user.id);
-      this.saveUsers();
-      this.showSnackBar('Usuário excluído!');
-    }
+    this.confirmationService.confirmDelete(user.name, 'usuário').subscribe(confirmed => {
+      if (confirmed) {
+        this.users = this.users.filter(u => u.id !== user.id);
+        this.saveUsers();
+        this.showSnackBar('Usuário excluído com sucesso!');
+      }
+    });
   }
 
   getRoleLabel(role: string): string {

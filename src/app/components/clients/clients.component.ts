@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ClientService } from '../../services/client.service';
 import { Client } from '../../models';
 import { ClientDialogComponent } from './client-dialog.component';
+import { ConfirmationService } from '../../services/confirmation.service';
 
 @Component({
   selector: 'app-clients',
@@ -16,7 +17,8 @@ export class ClientsComponent implements OnInit {
 
   constructor(
     private clientService: ClientService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -59,13 +61,18 @@ export class ClientsComponent implements OnInit {
   }
 
   deleteClient(id: string): void {
-    if (confirm('Deseja realmente excluir este cliente?')) {
-      this.clientService.delete(id).subscribe({
-        next: () => {
-          this.loadClients();
-        }
-      });
-    }
+    const client = this.clients.find(c => c.id === id);
+    if (!client) return;
+
+    this.confirmationService.confirmDelete(client.name, 'cliente').subscribe(confirmed => {
+      if (confirmed) {
+        this.clientService.delete(id).subscribe({
+          next: () => {
+            this.loadClients();
+          }
+        });
+      }
+    });
   }
 
   formatCurrency(value: number): string {

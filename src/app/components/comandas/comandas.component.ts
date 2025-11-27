@@ -12,6 +12,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { ConfirmationService } from '../../services/confirmation.service';
 
 interface ComandaItem {
   id: number;
@@ -67,7 +68,8 @@ export class ComandasComponent implements OnInit {
   constructor(
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -188,15 +190,21 @@ export class ComandasComponent implements OnInit {
       return;
     }
 
-    if (confirm(`Fechar comanda ${comanda.number}?\nTotal: R$ ${comanda.subtotal.toFixed(2)}\n\nA comanda ficará disponível para pagamento no PDV.`)) {
-      // Marcar comanda como fechada
-      comanda.status = 'CLOSED';
-      comanda.closedAt = new Date();
-      this.saveComandas();
-      this.applyFilters();
-
-      this.showSnackBar('Comanda fechada! Disponível para pagamento no PDV.', 'success');
-    }
+    this.confirmationService.confirm({
+      title: 'Fechar Comanda?',
+      message: `Comanda ${comanda.number}\nTotal: R$ ${comanda.subtotal.toFixed(2)}\n\nA comanda ficará disponível para pagamento no PDV.`,
+      confirmText: 'Fechar',
+      cancelText: 'Cancelar',
+      type: 'warning'
+    }).subscribe(confirmed => {
+      if (confirmed) {
+        comanda.status = 'CLOSED';
+        comanda.closedAt = new Date();
+        this.saveComandas();
+        this.applyFilters();
+        this.showSnackBar('Comanda fechada! Disponível para pagamento no PDV.', 'success');
+      }
+    });
   }
 
   deleteComanda(comanda: Comanda): void {
@@ -205,12 +213,14 @@ export class ComandasComponent implements OnInit {
       return;
     }
 
-    if (confirm(`Excluir comanda ${comanda.number}?`)) {
-      this.comandas = this.comandas.filter(c => c.id !== comanda.id);
-      this.saveComandas();
-      this.applyFilters();
-      this.showSnackBar('Comanda excluída!');
-    }
+    this.confirmationService.confirmDelete(`Comanda ${comanda.number}`, 'comanda').subscribe(confirmed => {
+      if (confirmed) {
+        this.comandas = this.comandas.filter(c => c.id !== comanda.id);
+        this.saveComandas();
+        this.applyFilters();
+        this.showSnackBar('Comanda excluída com sucesso!');
+      }
+    });
   }
 
   getStatusColor(status: string): string {

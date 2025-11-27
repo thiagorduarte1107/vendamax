@@ -11,6 +11,7 @@ import { UserManagementService } from '../../services/user-management.service';
 import { User, UserRole } from '../../models';
 import { MatDialog } from '@angular/material/dialog';
 import { UserDialogComponent } from './user-dialog.component';
+import { ConfirmationService } from '../../services/confirmation.service';
 
 @Component({
   selector: 'app-user-management',
@@ -42,7 +43,8 @@ export class UserManagementComponent implements OnInit {
 
   constructor(
     private userService: UserManagementService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -99,25 +101,36 @@ export class UserManagementComponent implements OnInit {
   }
 
   toggleActive(user: User): void {
-    if (confirm(`Deseja ${user.active ? 'desativar' : 'ativar'} o usuário ${user.name}?`)) {
-      this.userService.toggleActive(user.id).subscribe({
-        next: () => {
-          this.loadUsers();
-        },
-        error: (err) => console.error('Erro ao alterar status:', err)
-      });
-    }
+    const action = user.active ? 'desativar' : 'ativar';
+    this.confirmationService.confirm({
+      title: `${action.charAt(0).toUpperCase() + action.slice(1)} Usuário?`,
+      message: `Deseja ${action} o usuário "${user.name}"?`,
+      confirmText: action.charAt(0).toUpperCase() + action.slice(1),
+      cancelText: 'Cancelar',
+      type: 'warning'
+    }).subscribe(confirmed => {
+      if (confirmed) {
+        this.userService.toggleActive(user.id).subscribe({
+          next: () => {
+            this.loadUsers();
+          },
+          error: (err) => console.error('Erro ao alterar status:', err)
+        });
+      }
+    });
   }
 
   deleteUser(user: User): void {
-    if (confirm(`Deseja realmente excluir o usuário ${user.name}?`)) {
-      this.userService.delete(user.id).subscribe({
-        next: () => {
-          this.loadUsers();
-        },
-        error: (err) => console.error('Erro ao excluir usuário:', err)
-      });
-    }
+    this.confirmationService.confirmDelete(user.name, 'usuário').subscribe(confirmed => {
+      if (confirmed) {
+        this.userService.delete(user.id).subscribe({
+          next: () => {
+            this.loadUsers();
+          },
+          error: (err) => console.error('Erro ao excluir usuário:', err)
+        });
+      }
+    });
   }
 
   getRoleLabel(role: UserRole): string {

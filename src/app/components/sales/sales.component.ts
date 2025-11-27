@@ -3,6 +3,7 @@ import { SaleService } from '../../services/sale.service';
 import { ClientService } from '../../services/client.service';
 import { ProductService } from '../../services/product.service';
 import { Sale, Client, Product, SaleItem } from '../../models';
+import { ConfirmationService } from '../../services/confirmation.service';
 
 @Component({
   selector: 'app-sales',
@@ -27,7 +28,8 @@ export class SalesComponent implements OnInit {
   constructor(
     private saleService: SaleService,
     private clientService: ClientService,
-    private productService: ProductService
+    private productService: ProductService,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -67,13 +69,18 @@ export class SalesComponent implements OnInit {
   }
 
   deleteSale(id: string): void {
-    if (confirm('Deseja realmente excluir esta venda?')) {
-      this.saleService.delete(id).subscribe({
-        next: () => {
-          this.loadSales();
-        }
-      });
-    }
+    const sale = this.sales.find(s => s.id === id);
+    if (!sale) return;
+
+    this.confirmationService.confirmDelete(`Venda #${sale.id}`, 'venda').subscribe(confirmed => {
+      if (confirmed) {
+        this.saleService.delete(id).subscribe({
+          next: () => {
+            this.loadSales();
+          }
+        });
+      }
+    });
   }
 
   formatCurrency(value: number): string {

@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { CategoryService } from '../../services/category.service';
 import { Category } from '../../models';
 import { CategoryDialogComponent } from './category-dialog.component';
+import { ConfirmationService } from '../../services/confirmation.service';
 
 @Component({
   selector: 'app-categories',
@@ -16,7 +17,8 @@ export class CategoriesComponent implements OnInit {
 
   constructor(
     private categoryService: CategoryService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -59,12 +61,17 @@ export class CategoriesComponent implements OnInit {
   }
 
   deleteCategory(id: string): void {
-    if (confirm('Deseja realmente excluir esta categoria?')) {
-      this.categoryService.delete(id).subscribe({
-        next: () => {
-          this.loadCategories();
-        }
-      });
-    }
+    const category = this.categories.find(c => c.id === id);
+    if (!category) return;
+
+    this.confirmationService.confirmDelete(category.name, 'categoria').subscribe(confirmed => {
+      if (confirmed) {
+        this.categoryService.delete(id).subscribe({
+          next: () => {
+            this.loadCategories();
+          }
+        });
+      }
+    });
   }
 }

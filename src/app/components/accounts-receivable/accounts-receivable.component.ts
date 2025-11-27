@@ -4,6 +4,7 @@ import { AccountService } from '../../services/account.service';
 import { ClientService } from '../../services/client.service';
 import { AccountReceivable, Client } from '../../models';
 import { AccountReceivableDialogComponent } from './account-receivable-dialog.component';
+import { ConfirmationService } from '../../services/confirmation.service';
 
 @Component({
   selector: 'app-accounts-receivable',
@@ -19,7 +20,8 @@ export class AccountsReceivableComponent implements OnInit {
   constructor(
     private accountService: AccountService,
     private clientService: ClientService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -79,13 +81,18 @@ export class AccountsReceivableComponent implements OnInit {
   }
 
   deleteAccount(id: string): void {
-    if (confirm('Deseja realmente excluir esta conta?')) {
-      this.accountService.deleteReceivable(id).subscribe({
-        next: () => {
-          this.loadAccounts();
-        }
-      });
-    }
+    const account = this.accounts.find(a => a.id === id);
+    if (!account) return;
+
+    this.confirmationService.confirmDelete(account.description, 'conta a receber').subscribe(confirmed => {
+      if (confirmed) {
+        this.accountService.deleteReceivable(id).subscribe({
+          next: () => {
+            this.loadAccounts();
+          }
+        });
+      }
+    });
   }
 
   formatCurrency(value: number): string {

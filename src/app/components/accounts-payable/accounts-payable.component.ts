@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AccountService } from '../../services/account.service';
 import { AccountPayable } from '../../models';
 import { AccountPayableDialogComponent } from './account-payable-dialog.component';
+import { ConfirmationService } from '../../services/confirmation.service';
 
 @Component({
   selector: 'app-accounts-payable',
@@ -16,7 +17,8 @@ export class AccountsPayableComponent implements OnInit {
 
   constructor(
     private accountService: AccountService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -67,13 +69,18 @@ export class AccountsPayableComponent implements OnInit {
   }
 
   deleteAccount(id: string): void {
-    if (confirm('Deseja realmente excluir esta conta?')) {
-      this.accountService.deletePayable(id).subscribe({
-        next: () => {
-          this.loadAccounts();
-        }
-      });
-    }
+    const account = this.accounts.find(a => a.id === id);
+    if (!account) return;
+
+    this.confirmationService.confirmDelete(account.description, 'conta a pagar').subscribe(confirmed => {
+      if (confirmed) {
+        this.accountService.deletePayable(id).subscribe({
+          next: () => {
+            this.loadAccounts();
+          }
+        });
+      }
+    });
   }
 
   formatCurrency(value: number): string {

@@ -4,6 +4,7 @@ import { ProductService } from '../../services/product.service';
 import { CategoryService } from '../../services/category.service';
 import { Product, Category } from '../../models';
 import { ProductDialogComponent } from './product-dialog.component';
+import { ConfirmationService } from '../../services/confirmation.service';
 
 @Component({
   selector: 'app-products',
@@ -19,7 +20,8 @@ export class ProductsComponent implements OnInit {
   constructor(
     private productService: ProductService,
     private categoryService: CategoryService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -71,13 +73,18 @@ export class ProductsComponent implements OnInit {
   }
 
   deleteProduct(id: string): void {
-    if (confirm('Deseja realmente excluir este produto?')) {
-      this.productService.delete(id).subscribe({
-        next: () => {
-          this.loadProducts();
-        }
-      });
-    }
+    const product = this.products.find(p => p.id === id);
+    if (!product) return;
+
+    this.confirmationService.confirmDelete(product.name, 'produto').subscribe(confirmed => {
+      if (confirmed) {
+        this.productService.delete(id).subscribe({
+          next: () => {
+            this.loadProducts();
+          }
+        });
+      }
+    });
   }
 
   formatCurrency(value: number): string {
