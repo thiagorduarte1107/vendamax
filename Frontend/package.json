@@ -1,7 +1,7 @@
 {
-  "name": "anota-ai-angular",
+  "name": "vendamax-frontend",
   "version": "1.0.0",
-  "description": "Sistema de Gestão Comercial com Angular 17",
+  "description": "VendaMax Frontend - Sistema de Gestão Comercial com Angular 17",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "buildCommand": "cd Frontend && npm install && npm run build",
+  "outputDirectory": "Frontend/dist/vendamax-frontend/browser",
+  "framework": null,
+  "installCommand": "cd Frontend && npm install",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
