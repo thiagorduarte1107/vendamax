@@ -67,10 +67,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "anota-ai-angular:build:production"
+              "buildTarget": "vendamax-frontend:build:production"
             },
             "development": {
-              "buildTarget": "anota-ai-angular:build:development"
+              "buildTarget": "vendamax-frontend:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -78,7 +78,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "anota-ai-angular:build"
+            "buildTarget": "vendamax-frontend:build"
           }
         },
         "test": {
