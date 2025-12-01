@@ -1,21 +1,26 @@
-# 🚀 VendaMax - Frontend
+# 🚀 VendaMax
 
-Interface web do sistema VendaMax desenvolvida em Angular 17.
+Sistema completo de gestão comercial com frontend Angular 17 e backend Spring Boot.
 
-> **Backend:** https://github.com/thiagorduarte1107/vendasmaxbackend
+---
+
+## 📦 Repositórios
+
+- **Frontend:** https://github.com/thiagorduarte1107/vendamaxfrontend (este repositório)
+- **Backend:** https://github.com/thiagorduarte1107/vendasmaxbackend
 
 ---
 
 ## 📋 Índice
 
 - [Sobre o Projeto](#sobre-o-projeto)
+- [Estrutura do Repositório](#estrutura-do-repositório)
 - [Tecnologias](#tecnologias)
 - [Pré-requisitos](#pré-requisitos)
 - [Instalação e Configuração](#instalação-e-configuração)
 - [Credenciais de Acesso](#credenciais-de-acesso)
-- [Estrutura do Projeto](#estrutura-do-projeto)
 - [Funcionalidades](#funcionalidades)
-- [Documentação da API](#documentação-da-api)
+- [Deploy](#deploy)
 
 ---
 
@@ -35,8 +40,36 @@ Interface web do sistema VendaMax desenvolvida em Angular 17.
 
 ---
 
+## 📁 Estrutura do Repositório
+
+```
+vendamaxfrontend/
+├── Frontend/              # Código Angular 17
+│   ├── src/              # Código fonte
+│   ├── angular.json      # Configuração Angular
+│   └── package.json      # Dependências
+│
+├── database/             # Scripts SQL
+│   ├── README.md         # Documentação dos scripts
+│   ├── create-database-sqlserver.sql
+│   ├── insert-test-data.sql
+│   └── ...
+│
+├── Docs/                 # Documentação (local, não commitada)
+│   ├── README.md
+│   ├── BACKEND-PLAN.md
+│   ├── BRAINSTORM.md
+│   └── ...
+│
+├── vercel.json           # Configuração Vercel
+└── README.md             # Este arquivo
+```
+
+---
+
 ## 🛠️ Tecnologias
 
+### **Frontend**
 - **Angular 17**
 - **TypeScript**
 - **Angular Material**
@@ -44,6 +77,13 @@ Interface web do sistema VendaMax desenvolvida em Angular 17.
 - **Chart.js**
 - **jsPDF**
 - **SCSS**
+
+### **Backend** (repositório separado)
+- **Spring Boot 3.2**
+- **Java 17**
+- **SQL Server 2022**
+- **JWT Authentication**
+- **Swagger/OpenAPI**
 
 ---
 
