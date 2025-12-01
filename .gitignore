@@ -1,0 +1,17 @@
+# Documentação local (não commitar)
+Docs/
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backend (repositório separado)
+Backend/
+
+# Database
+database/
